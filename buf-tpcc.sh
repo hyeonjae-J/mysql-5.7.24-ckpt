@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=/home/vldb/F2-CKPT/bld/lib
-config_file="/home/vldb/F2-CKPT/my.cnf"
-CKPT_DIR=/home/vldb/F2-CKPT
+export LD_LIBRARY_PATH=/home/vldb/mysql-5.7.24-ckpt/bld/lib
+config_file="/home/vldb/mysql-5.7.24-ckpt/my.cnf"
+CKPT_DIR=/home/vldb/mysql-5.7.24-ckpt
 RESULT_DIR=/home/vldb/RESULT/default_test2
 
 mkdir ${RESULT_DIR}
@@ -29,7 +29,7 @@ iostat -mx -d 1 | grep sdb &> ${output}.iostat &
 vmstat 1 &> ${output}.vmstat &
 
 # run monitoring 
-cd /home/vldb/F2-CKPT
+cd /home/vldb/mysql-5.7.24-ckpt
 ./monitor.sh $output.stat &
 
 # run tpc-c

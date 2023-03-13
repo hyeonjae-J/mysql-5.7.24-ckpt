@@ -22,5 +22,5 @@ echo "Loading MySQL data finish"
 
 #echo 'my.cnf (nvdimm) working!'
 #gdb --args ./mysqld --defaults-file=../../my.cnf --disable-log-bin #&>/dev/null &disown
-/home/vldb/F2-CKPT/bld/bin/mysqld --defaults-file=/home/vldb/F2-CKPT/my.cnf --disable-log-bin &>/dev/null &disown
+/home/vldb/mysql-5.7.24-ckpt/bld/bin/mysqld --defaults-file=/home/vldb/mysql-5.7.24-ckpt/my.cnf --disable-log-bin &>/dev/null &disown
 echo "Server On"
