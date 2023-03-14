@@ -23,8 +23,7 @@ cd ${CKPT_DIR}
 ./START.sh
 sleep 300s
 
-iostat -x 1 | grep -A1 idle &> ${output}.iostat &
-iostat -mx -d 1 | grep sdb &> ${output}.iostat &
+iostat -x 1 | awk '/avg-cpu/{print;getline;print}/Device/{print}/sdb/{print}' &> ${output}.iostat &
 
 vmstat 1 &> ${output}.vmstat &
 
