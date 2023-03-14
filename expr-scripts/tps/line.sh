@@ -11,12 +11,19 @@ gnuplot -persist <<-EOFMarker
     set ylabel "Transactions per 10 seconds"
     set pointsize 1
     set xrange [0:540]
-    set yrange [0:30000]
-    # plot
-    plot "$1" index 0 with lines title "20G, 1G, 128M, 10%", \
-        "$1" index 1 with lines title "20G, 1G, 128M, 100%(vanila)", \
-        "$1" index 2 with lines title "20G, 1G, 128M, 100%(vanila2)"; 
+    set yrange [0:20000]
+    # plot101
+    plot "$1" index 0 with lines title "20G, 1G, 16M", \
+        "$1" index 1 with lines title "20G, 2G, 16M", \
+        "$1" index 2 with lines title "20G, 3G, 16M", \
+        "$1" index 3 with lines title "20G, 4G, 16M", \
+        "$1" index 4 with lines title "20G, 5G, 16M", \
+        "$1" index 5 with lines title "20G, 6G, 16M", \
+        "$1" index 6 with lines title "20G, 7G, 16M", \
+        "$1" index 7 with lines title "20G, 8G, 16M", \
+        "$1" index 8 with lines title "20G, 9G, 16M", \
+        "$1" index 9 with lines title "20G, 10G, 16M";
 EOFMarker
 
 
-#example command : sh line.sh line.txt output
+#example command : ./line.sh line.txt output
