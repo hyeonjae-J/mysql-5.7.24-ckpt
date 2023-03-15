@@ -25,5 +25,5 @@ gnuplot -persist <<-EOFMarker
         "$1" index 9 with lines title "20G, 10G, 16M";
 EOFMarker
 
-
+#How to use : py 파일에서 tpcc 파일 경로 설정.
 #example command : ./line.sh line.txt output

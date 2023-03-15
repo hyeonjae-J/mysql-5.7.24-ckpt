@@ -24,5 +24,5 @@ gnuplot -persist <<-EOFMarker
                 '' using 3 notitle;
 EOFMarker
 
-
+#How to use : py 파일에서 tpcc 파일 경로, 출력 타입 설정. 
 #example command : ./tpmc.sh tpmc.txt output
