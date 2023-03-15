@@ -1,38 +1,50 @@
-import sys
+def search_master_line(file_path):
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+        reversed_lines = reversed(lines) # 라인을 뒤집어서 탐색
+        for i, line in enumerate(reversed_lines):
+            if 'Master     :' in line:
+                return len(lines) - i # 라인 인덱스를 거꾸로 돌려야 함
+    return -1 # Master 라인을 찾지 못한 경우 -1 반환
 
-def ratio(master, flush, log):
-    sum = master + flush + log
-    global Master
-    global FlushList
-    global Logging
-    Master=str(100*round(master/sum, 4))
-    FlushList=str(100*round(flush/sum, 4))
-    Logging=str(100*round(log/sum, 4))
+files = ['/home/vldb/RESULT/redo_test3/20G_1G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_2G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_3G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_4G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_5G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_6G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_7G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_8G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_9G_16M_vanila.stat',
+        '/home/vldb/RESULT/redo_test3/20G_10G_16M_vanila.stat']
 
-def main():
-    f=open('ckpt-trigger.txt', 'w')
-    global Master
-    global FlushList
-    global Logging
+with open('ckpt_ratio.txt', 'w') as f:  
+        f.write("# Buffer Master FlushList Dirty Logging\n")
 
-    print("# Buffer Master Dirty FlushList Logging", file=f)
+for i, file in enumerate(files):
+    m_line_num = search_master_line(file)-1
     
-    #put master, flush, log
-    ratio(1041, 33292, 2253)
-    print("32M    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    ratio(1056, 33920, 2291)
-    print("64M    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    ratio(1046, 34423, 2379)
-    print("128M    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    ratio(1047, 34219, 2345)
-    print("256M    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    ratio(1053, 35244, 2528)
-    print("512M    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    ratio(1051, 37223, 2696)
-    print("1G    0 "+Master+" 0 "+FlushList+" "+ Logging, file=f)
-    
-    
-    f.close()
-    
-if __name__=="__main__":
-    main()
+    with open(file, 'r') as f:
+
+        lines = f.readlines()
+        
+        master_line = lines[m_line_num]
+        flush_line = lines[m_line_num+1]
+        dirty_line = lines[m_line_num+2]
+        log_line = lines[m_line_num+3]
+
+        master =int(''.join(filter(lambda x: x.isdigit(), master_line)))
+        flush = int(''.join(filter(lambda x: x.isdigit(), flush_line)))
+        dirty = int(''.join(filter(lambda x: x.isdigit(), dirty_line)))
+        log = int(''.join(filter(lambda x: x.isdigit(), log_line)))
+
+        total = master + flush + dirty + log 
+
+        master_percent = master / total * 100
+        flush_percent = flush / total * 100
+        dirty_percent = dirty / total * 100
+        log_percent = log / total * 100
+        
+    with open('ckpt_ratio.txt', 'a') as f:  
+        print(str(i+1)+"G 0 %.2f %.2f %.2f %.2f" %(master_percent, flush_percent, dirty_percent, log_percent), file=f)
+        
