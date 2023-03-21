@@ -9,13 +9,21 @@ gnuplot -persist <<-EOFMarker
     set output "$2.png"
 
 
+<<<<<<< HEAD
     set title "The number of Checkpoint Trigger" font "Helvetica, 30"
+=======
+    set title "Checkpoint Trigger Ratio" font "Helvetica, 30"
+>>>>>>> 810f6ec6fb5476aeff3d29dd13e23696a5ca51b2
     set style data histogram
 
     set style fill solid border -1
 
     set ylabel "Checkpoint 횟수"
+<<<<<<< HEAD
     set xlabel "Redo Log size"
+=======
+    set xlabel "Redo log size"
+>>>>>>> 810f6ec6fb5476aeff3d29dd13e23696a5ca51b2
     set boxwidth 1.0 relative
 
     # plot
