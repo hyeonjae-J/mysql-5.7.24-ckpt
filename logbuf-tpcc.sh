@@ -22,7 +22,7 @@ cd ${CKPT_DIR}
 ./START.sh
 sleep 300s
 
-iostat -x 1 | awk '/avg-cpu/{print;getline;print}/Device/{print}/sdb/{print}' &> ${output}.iostat &
+iostat -x 1 | awk '/avg-cpu/{print;getline;print;getline;print}/Device/{print}/sdb/{print}' &> ${output}.iostat &
 vmstat 1 &> ${output}.vmstat &
 
 # run monitoring 
