@@ -1774,9 +1774,12 @@ buf_do_flush_list_batch(
 	     && bpage->oldest_modification < lsn_limit;
 	     bpage = buf_pool->flush_hp.get(),
 	     ++scanned) {
-
+		
+		//modified by hj
+		fprintf(stderr, "bpage old boolean : %d\n", buf_page_is_old(bpage));
+			
 		buf_page_t*	prev;
-
+		
 		ut_a(bpage->oldest_modification > 0);
 		ut_ad(bpage->in_flush_list);
 
@@ -1796,7 +1799,8 @@ buf_do_flush_list_batch(
 
 		--len;
 	}
-
+	fprintf(stderr, "buf_do_flush_batch cycle done\n");
+			
 	buf_pool->flush_hp.set(NULL);
 	buf_flush_list_mutex_exit(buf_pool);
 
@@ -2223,6 +2227,7 @@ buf_flush_single_page_from_LRU(
 
 		} else if (buf_flush_ready_for_flush(
 				   bpage, BUF_FLUSH_SINGLE_PAGE)) {
+			ulint   spf_start_time = ut_time_ms(); //added line
 
 			/* Block is ready for flush. Try and dispatch an IO
 			request. We'll put it on free list in IO completion
@@ -2234,6 +2239,10 @@ buf_flush_single_page_from_LRU(
 
 			freed = buf_flush_page(
 				buf_pool, bpage, BUF_FLUSH_SINGLE_PAGE, true);
+
+			ulint   spf_end_time = ut_time_ms();	//added line
+
+			fprintf(stderr, "single page flush response time: %d\n", spf_end_time-spf_start_time); //added line
 
 			if (freed) {
 				break;
@@ -2897,7 +2906,7 @@ pc_flush_slot(void)
 
 			list_tm = ut_time_ms();
 
-			slot->succeeded_list = buf_flush_do_batch(
+			slot->succeeded_list = buf_flush_do_batch( //CP
 				buf_pool, BUF_FLUSH_LIST,
 				slot->n_pages_requested,
 				page_cleaner->lsn_limit,
