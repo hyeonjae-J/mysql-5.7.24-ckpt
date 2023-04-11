@@ -4385,6 +4385,8 @@ void
 recv_recovery_rollback_active(void)
 /*===============================*/
 {
+	ib_time_monotonic_ms_t	undo_start_time = ut_time_monotonic_ms(); //hj
+	fprintf(stderr, "undo start time: %d\n", undo_start_time); //hj
 	ut_ad(!recv_writer_thread_active);
 
 	/* Switch latching order checks on in sync0debug.cc, if

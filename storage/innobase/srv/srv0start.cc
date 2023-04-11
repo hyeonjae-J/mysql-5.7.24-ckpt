@@ -2223,8 +2223,9 @@ files_checked:
 		/* We always try to do a recovery, even if the database had
 		been shut down normally: this is the normal startup path */
 
+		ib_time_monotonic_ms_t	redo_start_time = ut_time_monotonic_ms(); //hj
 		err = recv_recovery_from_checkpoint_start(flushed_lsn);
-
+		
 		recv_sys->dblwr.pages.clear();
 
 		if (err == DB_SUCCESS) {
@@ -2282,6 +2283,10 @@ files_checked:
 		are initialized in trx_sys_init_at_db_start(). */
 
 		recv_recovery_from_checkpoint_finish();
+		ib_time_monotonic_ms_t	redo_end_time = ut_time_monotonic_ms(); //hj
+		fprintf(stderr, "redo start time: %d\n", redo_start_time); //hj
+		fprintf(stderr, "redo end time: %d\n", redo_end_time); //hj
+		fprintf(stderr, "redo recovery time: %d\n", redo_end_time-redo_start_time); //hj
 
 		/* Fix-up truncate of tables in the system tablespace
 		if server crashed while truncate was active. The non-
