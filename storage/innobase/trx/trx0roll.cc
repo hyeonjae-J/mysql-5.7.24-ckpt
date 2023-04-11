@@ -867,7 +867,7 @@ DECLARE_THREAD(trx_rollback_or_clean_all_recovered)(
 	trx_rollback_or_clean_recovered(TRUE);
 
 	trx_rollback_or_clean_is_active = false;
-	ib_time_monotonic_ms_t	undo_end_time = ut_time_monotonic_ms(); //hj
+	ulint	undo_end_time = ut_time_ms(); //hj
 	fprintf(stderr, "undo end time: %d\n", undo_end_time); //hj
 	my_thread_end();
 	/* We count the number of threads in os_thread_exit(). A created
