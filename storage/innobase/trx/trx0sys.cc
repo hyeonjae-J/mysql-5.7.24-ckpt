@@ -454,8 +454,7 @@ trx_sys_init_at_db_start(void)
 /*==========================*/
 {
 	ulint	trx_sys_init_time = ut_time_ms(); //hj
-	fprintf(stderr, "trx_sys_init_at_db_start: %d\n", trx_sys_init_time); //hj
-
+	ib::info() << "trx_sys_init_at_db_start: " << trx_sys_init_time; //hj
 	purge_pq_t*	purge_queue;
 	trx_sysf_t*	sys_header;
 	ib_uint64_t	rows_to_undo	= 0;

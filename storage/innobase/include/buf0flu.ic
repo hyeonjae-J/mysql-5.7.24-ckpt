@@ -85,6 +85,15 @@ buf_flush_note_modification(
 	ut_ad(block->page.newest_modification <= end_lsn);
 	block->page.newest_modification = end_lsn;
 
+
+	// buf_page_t* my_page = &block->page;//modified by hj	
+	// if(buf_page_in_file(my_page)){
+	// 	my_page->access_time = static_cast<uint>(ut_time_ms());//modified by hj
+	// 	my_page->access_count += 1; //modified by hj
+	// 	ib::info() << "Access time and Access count UPDATED"; //modified by hj
+	// }
+
+
 	/* Don't allow to set flush observer from non-null to null,
 	or from one observer to another. */
 	ut_ad(block->page.flush_observer == NULL

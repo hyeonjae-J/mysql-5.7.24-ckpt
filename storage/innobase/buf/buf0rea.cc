@@ -147,6 +147,7 @@ buf_read_page_low(
 	pool for read, then DISCARD cannot proceed until the read has
 	completed */
 	bpage = buf_page_init_for_read(err, mode, page_id, page_size, unzip);
+	
 
 	if (bpage == NULL) {
 

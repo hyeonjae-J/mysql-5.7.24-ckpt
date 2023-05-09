@@ -4995,6 +4995,8 @@ buf_page_init_low(
 	bpage->buf_fix_count = 0;
 	bpage->freed_page_clock = 0;
 	bpage->access_time = 0;
+	// bpage->access_count = 0; //modified by hj
+	bpage->ckpt_flag = 0;
 	bpage->newest_modification = 0;
 	bpage->oldest_modification = 0;
 	HASH_INVALIDATE(bpage, hash);

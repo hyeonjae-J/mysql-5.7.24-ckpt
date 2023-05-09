@@ -1079,7 +1079,8 @@ buf_flush_write_block_low(
 
 #ifdef UNIV_F2CKPT
   // (jhpark): keep monitoring write flush type for TPC-C Benchmark
-  ib::info() << "bpage->id.space(): "<<bpage->id.space();
+  //hj
+  //ib::info() << "bpage->id.space(): "<<bpage->id.space();
   ckpt_add_write_type(bpage->id.space(), flush_type);
 #endif
 
@@ -1774,14 +1775,34 @@ buf_do_flush_list_batch(
 	     && bpage->oldest_modification < lsn_limit;
 	     bpage = buf_pool->flush_hp.get(),
 	     ++scanned) {
-		
-		//modified by hj
-		fprintf(stderr, "bpage old boolean : %d\n", buf_page_is_old(bpage));
-			
+	
 		buf_page_t*	prev;
 		
 		ut_a(bpage->oldest_modification > 0);
 		ut_ad(bpage->in_flush_list);
+
+		// unsigned time = static_cast<uint>(ut_time_ms()); //modified by hj
+		// ulint access_gap = time - bpage->access_time; //modified by hj
+
+		// //hot page 판별 기준, 현재 10만번 accessed, 1000ms초 안에 재접근 modified by hj
+		// if(bpage->access_count > 10000 && access_gap < 10 ) {
+		// 	ib::info() << "Hot page! " << "Access gap : " << access_gap << " Access count : " << bpage->access_count;
+		// }
+		// else ib::info() << "Cold page! " << "Access gap : " << access_gap << " Access count : " << bpage->access_count;
+		
+		//flag를 이용해 skip
+		// if(bpage->ckpt_flag % 3 != 1){
+		// 	ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Skipped Page" ;
+		// 	bpage->ckpt_flag += 1;
+		// 	continue;
+		// }
+		// ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Checkpointed Page" ;
+		// bpage->ckpt_flag += 1;
+
+		//flush page의 sublist 위치, LSN 확인, modified by hj
+		ib::info()<< "bpage old boolean : " << buf_page_is_old(bpage) << " bpage LSN : " << bpage->oldest_modification;
+		ib::info()<< "bpage space : " << bpage->id.space() << " bpage num : "<< bpage->id.page_no();
+
 
 		prev = UT_LIST_GET_PREV(list, bpage);
 		buf_pool->flush_hp.set(prev);
@@ -1799,7 +1820,7 @@ buf_do_flush_list_batch(
 
 		--len;
 	}
-	fprintf(stderr, "buf_do_flush_batch cycle done\n");
+
 			
 	buf_pool->flush_hp.set(NULL);
 	buf_flush_list_mutex_exit(buf_pool);
@@ -1822,6 +1843,7 @@ buf_do_flush_list_batch(
 
 	ut_ad(buf_pool_mutex_own(buf_pool));
 
+	ib::info() << "buf_do_flush_batch cycle done";
 	return(count);
 }
 
@@ -2227,7 +2249,7 @@ buf_flush_single_page_from_LRU(
 
 		} else if (buf_flush_ready_for_flush(
 				   bpage, BUF_FLUSH_SINGLE_PAGE)) {
-			ulint   spf_start_time = ut_time_ms(); //added line
+			//ulint   spf_start_time = ut_time_ms(); //added line
 
 			/* Block is ready for flush. Try and dispatch an IO
 			request. We'll put it on free list in IO completion
@@ -2240,9 +2262,9 @@ buf_flush_single_page_from_LRU(
 			freed = buf_flush_page(
 				buf_pool, bpage, BUF_FLUSH_SINGLE_PAGE, true);
 
-			ulint   spf_end_time = ut_time_ms();	//added line
+			//ulint   spf_end_time = ut_time_ms();	//added line
 
-			fprintf(stderr, "single page flush response time: %d\n", spf_end_time-spf_start_time); //added line
+			//fprintf(stderr, "single page flush response time: %d\n", spf_end_time-spf_start_time); //added line
 
 			if (freed) {
 				break;

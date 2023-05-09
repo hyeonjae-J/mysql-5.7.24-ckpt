@@ -1548,6 +1548,7 @@ public:
 	/** Count of how manyfold this block is currently bufferfixed. */
 	ib_uint32_t	buf_fix_count;
 
+
 	/** type of pending I/O operation; also protected by
 	buf_pool->mutex for writes only */
 	buf_io_fix	io_fix;
@@ -1676,6 +1677,10 @@ public:
 					purposes without holding any
 					mutex or latch */
 	/* @} */
+	/** Count of how many this block is accessed. modified by hj*/
+	//ib_uint32_t	access_count;
+	unsigned int ckpt_flag;
+
 	unsigned	access_time;	/*!< time of first access, or
 					0 if the block was never accessed
 					in the buffer pool. Protected by

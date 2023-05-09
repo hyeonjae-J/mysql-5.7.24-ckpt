@@ -2284,10 +2284,9 @@ files_checked:
 
 		recv_recovery_from_checkpoint_finish();
 		ulint	redo_end_time = ut_time_ms(); //hj
-		fprintf(stderr, "redo start time: %d\n", redo_start_time); //hj
-		fprintf(stderr, "redo end time: %d\n", redo_end_time); //hj
-		fprintf(stderr, "redo recovery time: %d\n", redo_end_time-redo_start_time); //hj
-
+		ib::info() << "redo start time: " << redo_start_time; //hj
+		ib::info() << "redo end time: " << redo_end_time; //hj
+		ib::info() << "redo recovery time: " << redo_end_time-redo_start_time; //hj
 		/* Fix-up truncate of tables in the system tablespace
 		if server crashed while truncate was active. The non-
 		system tables are done after tablespace discovery. Do

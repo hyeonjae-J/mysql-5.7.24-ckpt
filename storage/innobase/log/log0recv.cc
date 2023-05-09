@@ -2407,6 +2407,7 @@ recv_recover_page_func(
 
 	page_newest_lsn = buf_page_get_newest_modification(&block->page);
 
+	
 	if (page_newest_lsn) {
 
 		page_lsn = page_newest_lsn;
@@ -4386,7 +4387,7 @@ recv_recovery_rollback_active(void)
 /*===============================*/
 {
 	ulint undo_start_time = ut_time_ms(); //hj
-	fprintf(stderr, "undo start time: %d\n", undo_start_time); //hj
+	ib::info() << "undo start time: " << undo_start_time; //hj
 	ut_ad(!recv_writer_thread_active);
 
 	/* Switch latching order checks on in sync0debug.cc, if
