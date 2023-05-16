@@ -1757,7 +1757,8 @@ buf_do_flush_list_batch(
 {
 	ulint		count = 0;
 	ulint		scanned = 0;
-
+	ulint		tmp_space = 0;	//hj
+	ulint		tmp_pageNum = 0; //hj
 	ut_ad(buf_pool_mutex_own(buf_pool));
 
 	/* Start from the end of the list looking for a suitable
@@ -1781,36 +1782,39 @@ buf_do_flush_list_batch(
 		ut_a(bpage->oldest_modification > 0);
 		ut_ad(bpage->in_flush_list);
 
-		// unsigned time = static_cast<uint>(ut_time_ms()); //modified by hj
-		// ulint access_gap = time - bpage->access_time; //modified by hj
+		prev = UT_LIST_GET_PREV(list, bpage);
+		buf_pool->flush_hp.set(prev);
 
-		// //hot page 판별 기준, 현재 10만번 accessed, 1000ms초 안에 재접근 modified by hj
-		// if(bpage->access_count > 10000 && access_gap < 10 ) {
-		// 	ib::info() << "Hot page! " << "Access gap : " << access_gap << " Access count : " << bpage->access_count;
-		// }
-		// else ib::info() << "Cold page! " << "Access gap : " << access_gap << " Access count : " << bpage->access_count;
-		
+		//이게 Skipped Page만큼 출력되면, index 넘어가는게 안되는거임.
+		if(tmp_space == bpage->id.space() && tmp_pageNum == bpage->id.page_no()){
+			ib::info()<< "indexed again" ;
+		}
+
 		//flag를 이용해 skip
-		// if(bpage->ckpt_flag % 3 != 1){
-		// 	ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Skipped Page" ;
-		// 	bpage->ckpt_flag += 1;
-		// 	continue;
-		// }
-		// ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Checkpointed Page" ;
-		// bpage->ckpt_flag += 1;
+		if(bpage->ckpt_flag % 3 != 1){
+			ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Skipped Page" ;
+			tmp_space = bpage->id.space();
+			tmp_pageNum = bpage->id.page_no();
+			bpage->ckpt_flag += 1;
+			continue;
+		}
+		else{
+			ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Checkpointed Page" ;
+			bpage->ckpt_flag += 1;
+		}
+
 
 		//flush page의 sublist 위치, LSN 확인, modified by hj
 		ib::info()<< "bpage old boolean : " << buf_page_is_old(bpage) << " bpage LSN : " << bpage->oldest_modification;
 		ib::info()<< "bpage space : " << bpage->id.space() << " bpage num : "<< bpage->id.page_no();
 
-
-		prev = UT_LIST_GET_PREV(list, bpage);
-		buf_pool->flush_hp.set(prev);
 		buf_flush_list_mutex_exit(buf_pool);
 
 #ifdef UNIV_DEBUG
 		bool flushed =
 #endif /* UNIV_DEBUG */
+
+
 		buf_flush_page_and_try_neighbors(
 			bpage, BUF_FLUSH_LIST, min_n, &count);
 
@@ -1821,7 +1825,6 @@ buf_do_flush_list_batch(
 		--len;
 	}
 
-			
 	buf_pool->flush_hp.set(NULL);
 	buf_flush_list_mutex_exit(buf_pool);
 
