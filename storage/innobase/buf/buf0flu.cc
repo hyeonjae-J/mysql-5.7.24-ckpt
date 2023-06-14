@@ -1782,58 +1782,63 @@ buf_do_flush_list_batch(
 		ut_a(bpage->oldest_modification > 0);
 		ut_ad(bpage->in_flush_list);
 		
+
+		
 		//for문 indexing
 		prev = UT_LIST_GET_PREV(list, bpage);
 		buf_pool->flush_hp.set(prev);
 
 
-		//이게 Skipped Page만큼 출력되면, index 넘어가는게 안되는거임.
-		if(tmp_space == bpage->id.space() && tmp_pageNum == bpage->id.page_no()){
-			ib::info()<< "indexed again" ;
-		}
 
-		//indexing 제대로 됐는 지 확인하는 logging용
-		tmp_space = bpage->id.space();
-		tmp_pageNum = bpage->id.page_no();		
+		// //default 버전을 위한 주석 처리 시작.
+		// //이게 Skipped Page만큼 출력되면, index 넘어가는게 안되는거임.
+		// if(tmp_space == bpage->id.space() && tmp_pageNum == bpage->id.page_no()){
+		// 	ib::info()<< "indexed again" ;
+		// }
+
+		// //indexing 제대로 됐는 지 확인하는 logging용
+		// tmp_space = bpage->id.space();
+		// tmp_pageNum = bpage->id.page_no();		
 		
-		//flag를 이용해 skip
-		if(bpage->ckpt_flag % 3 != 0){
-			ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Skipped bpage's space, bpage's num : " << tmp_space << ", " << tmp_pageNum;
-			bpage->ckpt_flag = (bpage->ckpt_flag+1)%3;
+		// //flag를 이용해 skip
+		// if(bpage->ckpt_flag % 3 != 0){
+		// 	ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Skipped bpage's space, bpage's num : " << tmp_space << " " << tmp_pageNum;
+		// 	bpage->ckpt_flag = (bpage->ckpt_flag+1)%3;
 
-			//bpage를 flush list에서 제거하는 코드 추가. 단 실제 flush는 하지 않고.
-			//buf_flush_remove 함수 내의 코드 활용.
-			UT_LIST_REMOVE(buf_pool->flush_list, bpage);
-			/* If the flush_rbt is active then delete from there as well. */
-			if (buf_pool->flush_rbt != NULL) {
-				buf_flush_delete_from_flush_rbt(bpage);
-			}
+		// 	//bpage를 flush list에서 제거하는 코드 추가. 단 실제 flush는 하지 않고.
+		// 	//buf_flush_remove 함수 내의 코드 활용.
+		// 	UT_LIST_REMOVE(buf_pool->flush_list, bpage);
+		// 	/* If the flush_rbt is active then delete from there as well. */
+		// 	if (buf_pool->flush_rbt != NULL) {
+		// 		buf_flush_delete_from_flush_rbt(bpage);
+		// 	}
 
-			buf_pool->stat.flush_list_bytes -= bpage->size.physical();
+		// 	buf_pool->stat.flush_list_bytes -= bpage->size.physical();
 
-			bpage->oldest_modification = bpage->newest_modification;
+		// 	bpage->oldest_modification = bpage->newest_modification;
 
-			/* If there is an observer that want to know if the asynchronous
-			flushing was done then notify it. */
-			if (bpage->flush_observer != NULL) {
-				bpage->flush_observer->notify_remove(buf_pool, bpage);
+		// 	/* If there is an observer that want to know if the asynchronous
+		// 	flushing was done then notify it. */
+		// 	if (bpage->flush_observer != NULL) {
+		// 		bpage->flush_observer->notify_remove(buf_pool, bpage);
 
-				bpage->flush_observer = NULL;
-			}
+		// 		bpage->flush_observer = NULL;
+		// 	}
 
-			//bpage의 ckpt flag +1, flush list에서 제거하고, 실제 flush 하지않고 skip!
-			continue;
-		}
-		else{
-			ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Checkpointed bpage's space, bpage's num : " << tmp_space << ", " << tmp_pageNum;
-			bpage->ckpt_flag = (bpage->ckpt_flag+1)%3;
-		}
-
+		// 	//bpage의 ckpt flag +1, flush list에서 제거하고, 실제 flush 하지않고 skip!
+		// 	continue;
+		// }
+		// else{
+		// 	ib::info()<< "ckpt flag : " << bpage->ckpt_flag << " Checkpointed bpage's space, bpage's num : " << tmp_space << " " << tmp_pageNum;
+		// 	bpage->ckpt_flag = (bpage->ckpt_flag+1)%3;
+		// }
+		// //default 버전을 위한 주석 처리 끝
 
 		//flush page의 sublist 위치, LSN 확인, modified by hj
-		// ib::info()<< "bpage old boolean : " << buf_page_is_old(bpage) << " bpage LSN : " << bpage->oldest_modification;
-		// ib::info()<< "bpage space : " << bpage->id.space() << " bpage num : "<< bpage->id.page_no();
-
+		ib::info()<< "bpage old boolean : " << buf_page_is_old(bpage) << " bpage LSN : " << bpage->oldest_modification;
+		ib::info()<< "bpage space : " << bpage->id.space() << " bpage num : "<< bpage->id.page_no();
+		//ib::info()<< "Checkpointed bpage's space, bpage's num : " << bpage->id.space()  << ", " << bpage->id.page_no();
+		
 
 		buf_flush_list_mutex_exit(buf_pool);
 
