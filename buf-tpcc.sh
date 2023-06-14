@@ -3,7 +3,7 @@
 export LD_LIBRARY_PATH=/home/vldb/mysql-5.7.24-ckpt/bld/lib
 config_file="/home/vldb/mysql-5.7.24-ckpt/my.cnf"
 CKPT_DIR=/home/vldb/mysql-5.7.24-ckpt
-RESULT_DIR=/home/vldb/RESULT/default_test2
+RESULT_DIR=/home/vldb/RESULT/20G_10G_16M
 
 mkdir ${RESULT_DIR}
 
@@ -17,7 +17,7 @@ cat $config_file | grep 'innodb_buffer_pool_size'
 cat $config_file | grep 'innodb_log_file_size'
 cat $config_file | grep 'innodb_log_buffer_size'
 
-output=${RESULT_DIR}/${buf}G_32thd_vanilla_flush
+output=${RESULT_DIR}/${buf}G
 
 cd ${CKPT_DIR}
 ./START.sh
@@ -33,7 +33,7 @@ cd /home/vldb/mysql-5.7.24-ckpt
 
 # run tpc-c
 cd /home/vldb/tpcc-mysql
-./tpcc_start -h127.0.0.1 -P3306 -dtpcc -uroot -w500 -r600 -c32 -l5400 | tee ${output}.tpcc  
+./tpcc_start -h127.0.0.1 -P3306 -dtpcc -uroot -w500 -r10 -c32 -l600 | tee ${output}.tpcc  
 
 # shutdown all process
 pkill -15 -ef iostat

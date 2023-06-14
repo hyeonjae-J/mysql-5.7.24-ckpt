@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export LD_LIBRARY_PATH=/home/vldb/mysql-5.7.24-ckpt/bld/lib
+
 config_file="/home/vldb/mysql-5.7.24-ckpt/my.cnf"
 CKPT_DIR=/home/vldb/mysql-5.7.24-ckpt
 RESULT_DIR=/home/vldb/RESULT/redo_test3
@@ -29,7 +30,6 @@ iostat -x 1 | awk '/avg-cpu/{print;getline;print;getline;print}/Device/{print}/s
 vmstat 1 &> ${output}.vmstat &
 
 # run monitoring 
-cd /home/vldb/mysql-5.7.24-ckpt
 ./monitor.sh $output.stat &
 
 # run tpc-c
