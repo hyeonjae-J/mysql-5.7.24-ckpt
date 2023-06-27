@@ -39,17 +39,17 @@ cat iostat.out | grep $device |  awk '{ sum+=$16} END {print "Device util(%): " 
 cd ${log_dir}
 
 
-#default 일 때.
-#체크포인트 횟수와, 체크포인트된 페이지의 총 갯수.
-echo "Checkpoint num : $(grep -c "buf_do_flush_batch cycle done" mysql_error_nvdimm.log)" >> ${result_dir}/result.txt && echo "Checkpointed page num : $(grep -c "bpage old boolean :" mysql_error_nvdimm.log)" >> ${result_dir}/result.txt
-#체크포인트 횟수 별 페이지 수.
-cat mysql_error_nvdimm.log | grep "bpage space : " | awk '{bpage_info = $8 " " $12; count[bpage_info]++} END {print "Total page num:", length(count); for (info in count) {if (count[info] == 1) once++; else if (count[info] == 2) twice++; else if (count[info] == 3) thrice++; else if (count[info] == 4) four++; else if (count[info] == 5) five++; else if (count[info] == 6) six++; else if (count[info] == 7) seven++; else if (count[info] == 8) eight++; else if (count[info] == 9) nine++; else if (count[info] == 10) ten++; else more_than_ten++} print "Once:", once; print "Twice:", twice; print "Thrice:", thrice; print "Four:", four; print "Five:", five; print "Six:", six; print "Seven:", seven; print "Eight:", eight; print "Nine:", nine; print "Ten:", ten; print "More than ten:", more_than_ten}' >> ${result_dir}/result.txt
+# #default 일 때.
+# #체크포인트 횟수와, 체크포인트된 페이지의 총 갯수.
+# echo "Checkpoint num : $(grep -c "buf_do_flush_batch cycle done" mysql_error_nvdimm.log)" >> ${result_dir}/result.txt && echo "Checkpointed page num : $(grep -c "bpage old boolean :" mysql_error_nvdimm.log)" >> ${result_dir}/result.txt
+# #체크포인트 횟수 별 페이지 수.
+# cat mysql_error_nvdimm.log | grep "bpage space : " | awk '{bpage_info = $8 " " $12; count[bpage_info]++} END {print "Total page num:", length(count); for (info in count) {if (count[info] == 1) once++; else if (count[info] == 2) twice++; else if (count[info] == 3) thrice++; else if (count[info] == 4) four++; else if (count[info] == 5) five++; else if (count[info] == 6) six++; else if (count[info] == 7) seven++; else if (count[info] == 8) eight++; else if (count[info] == 9) nine++; else if (count[info] == 10) ten++; else more_than_ten++} print "Once:", once; print "Twice:", twice; print "Thrice:", thrice; print "Four:", four; print "Five:", five; print "Six:", six; print "Seven:", seven; print "Eight:", eight; print "Nine:", nine; print "Ten:", ten; print "More than ten:", more_than_ten}' >> ${result_dir}/result.txt
 
-# #ckpt flag 사용할 때
-# #체크포인트 횟수, 체크포인트된 페이지의 총 갯수, Skipped page 총 갯수.
-# cat mysql_error_nvdimm.log | awk '/Skipped bpage'\''s space/ {skip++} /Checkpointed bpage'\''s space/ {checknum++} /buf_do_flush_batch cycle done/ {batch++} END {print "Skipped page num: " skip "\nCheckpointed page num: " checknum "\nCheckpoint num: " batch}' >> ${result_dir}/result.txt
-# # #체크포인트 횟수 별 페이지 수.
-# cat mysql_error_nvdimm.log | grep "bpage's space" | awk '{bpage_info = $15 " " $16; page_count[bpage_info]++} END {print "Total page num:", length(page_count); for (info in page_count) {if (page_count[info] == 1) once++; else if (page_count[info] == 2) twice++; else if (page_count[info] == 3) thrice++; else if (page_count[info] == 4) four++; else if (page_count[info] == 5) five++; else if (page_count[info] == 6) six++; else if (page_count[info] == 7) seven++; else if (page_count[info] == 8) eight++; else if (page_count[info] == 9) nine++; else if (page_count[info] == 10) ten++; else more_than_ten++} print "Once:", once; print "Twice:", twice; print "Thrice:", thrice; print "Four:", four; print "Five:", five; print "Six:", six; print "Seven:", seven; print "Eight:", eight; print "Nine:", nine; print "Ten:", ten; print "More than ten:", more_than_ten}' >> ${result_dir}/result.txt
+#ckpt flag 사용할 때
+#체크포인트 횟수, 체크포인트된 페이지의 총 갯수, Skipped page 총 갯수.
+cat mysql_error_nvdimm.log | awk '/Skipped bpage'\''s space/ {skip++} /Checkpointed bpage'\''s space/ {checknum++} /buf_do_flush_batch cycle done/ {batch++} END {print "Skipped page num: " skip "\nCheckpointed page num: " checknum "\nCheckpoint num: " batch}' >> ${result_dir}/result.txt
+# #체크포인트 횟수 별 페이지 수.
+cat mysql_error_nvdimm.log | grep "bpage's space" | awk '{bpage_info = $15 " " $16; page_count[bpage_info]++} END {print "Total page num:", length(page_count); for (info in page_count) {if (page_count[info] == 1) once++; else if (page_count[info] == 2) twice++; else if (page_count[info] == 3) thrice++; else if (page_count[info] == 4) four++; else if (page_count[info] == 5) five++; else if (page_count[info] == 6) six++; else if (page_count[info] == 7) seven++; else if (page_count[info] == 8) eight++; else if (page_count[info] == 9) nine++; else if (page_count[info] == 10) ten++; else more_than_ten++} print "Once:", once; print "Twice:", twice; print "Thrice:", thrice; print "Four:", four; print "Five:", five; print "Six:", six; print "Seven:", seven; print "Eight:", eight; print "Nine:", nine; print "Ten:", ten; print "More than ten:", more_than_ten}' >> ${result_dir}/result.txt
 
 
 

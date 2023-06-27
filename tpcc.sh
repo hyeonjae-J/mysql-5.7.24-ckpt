@@ -22,7 +22,7 @@ sleep 180s
 
 ###############Should be filled#################
 export LD_LIBRARY_PATH=/home/vldb/mysql-5.7.24-ckpt/bld/lib
-RESULT_DIR=/home/vldb/RESULT/default_25G_1_buf
+RESULT_DIR=/home/vldb/RESULT/debug4
 mkdir ${RESULT_DIR}
 
 #logging
@@ -44,6 +44,7 @@ pkill -9 -ef monitor.sh
 pkill -9 -ef mysqld
 
 cd /home/vldb/mysql-5.7.24-ckpt
+
 ./ckpt_parse.sh ${RESULT_DIR}
 
 echo "Parsing finish"
